@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "mineral-math-408204",
+  "private_key_id": "b85e1d993f458fb321d255e7d9c22939cd69d64f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCjCzLy1vWq8B1N\n42Ahih3Qy896z/z2hVsEQqB+qHohiXdKehfTeQixIBUC2KLX+ZfPcUhfkrBKYhcu\nDK5yvGc6d/90J1rRy9ITzLzrSak7JMXYt7rOozo/PWizk3WdkPVB28rZNWG7/c5m\n6YdF3Tyk3/SBIq9yn8POfy2DLXsL2jCWKZ2ZB6wywiZkyTqC0OzzvfCv3JgmwjBH\nLEde2On+PjYHxapkexBweG6Zmv4W8IuO3Hwar6E9Z0OfEHt05jfdGvl/jW4i0w+c\nwphbA8E/2/vjK4WE3Ro9KqS6QyIhR2W17jb86uhlS2ALGdlIqvApZ/IBSNAFGPfS\nbUNHAcybAgMBAAECggEACObBn1RxESYO04PIacxamF2oNDJKw0LAl1jz3jZghJg2\ntRA5YMhI2zK/MuqU6WmtChxLMTyW91inn1H97DGxCRYoEjVb1fxkucQBxG6/GIWH\nb6+IOWPb+DvoDXXNhA639SKEzpsFfPf8Xs39HqlXeEDp3msAXSevzwROfczr3Ne0\nWgOOlsk4XcVUt/j5uMK04hS5TtmMY3m0K2XL0j3A40QGuAzoUoMCndbVr2TrdvLb\nBb3MNTx+9RJZ4t7/bF9G+pufQLeTVQpRxCniMU3zZf3sR+j3Ayr+jP/PphNHa7hr\n68QGUe+RCoKEvJ/N4vMNLsZmkywvW/Kz3kJ8ExdHwQKBgQDZD6p5vfaZkroZIjGb\nTA4nRrxyY9njfkYPS/mVA4Z6+wL8xYNM7JvIX7JfEffgXMdKyLnm9MZMBqTJxU0t\nnFIiPuCSm2QAqZeLqa8UL2PTRn8LaWFeOc9RqphvKL9lJ4n2KZUeuC7Ag+/D3wu0\ng8hvWYQw/tYdIvAn2x34UfTYSwKBgQDAStT0d1eJd7MpEhq4avXiGH/kNld5MyOT\nzyBvq8XU97fcq3ZIVNx7YF/sdGs/OKK+g2SyaK/v7rA78gauezqyB+7/+v9/LGob\ndFFO/xyEOs6J4ymtFD9QqHBkXoF8FMvqBo52txPN3fR9wPrun+YSNfKKF0kppOjc\nfV24viXK8QKBgQDYS84axnsniZi8VuCL2fv4k3pRmsKS+U+jCphIL10gy2Sssb0n\nOFf8EbBTIDqbbpiBIwhs5tl7BNvM3DkODEmkKnfqX8IFDvoeiBYYzShybjtHCdmm\n5YB75r1Dd51RlVba35DjLbIY0OBplKe7V96xZshdcnO2UQxzCtwQiMqthQKBgQCw\nhYGMkem39jxv3YDN/tKNpbPxybjvN/TXAXNjUCqh4G3Wk0hYCh8E22nzZMP3G4S6\no1/TL6si9NivjvR3RAST3hiWwNG+6wTVAyiI/kQtVta3WeOuUUH2R0o1uVPgli7D\nPRWXAWWavMBumLNCT2MjIIbwIYQ2SH7DugpJR7Tl4QKBgFDBrVHbSPhNt2OGkP3J\nu8BdMFB+d6b6BEZw3TXe0dmq9lp1vE4yoxtN6wUEfkreJqR/dmtRMgGwO7MmuVCv\nA4bo0tscUpGjOZcT8xp7YK37irsigMmsFmKDnZnTgc/XxqCULcy4dh3nj8UxVxGw\nvBAs093pUtC9Q/MQmfbg/2R8\n-----END PRIVATE KEY-----\n",
+  "client_email": "physedu@mineral-math-408204.iam.gserviceaccount.com",
+  "client_id": "106213162891951675690",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/physedu%40mineral-math-408204.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

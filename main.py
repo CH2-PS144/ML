@@ -9,11 +9,12 @@ import cv2
 # NLP Library
 import spacy
 import re
+import os
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # Atur variabel lingkungan GOOGLE_APPLICATION_CREDENTIALS ke path file kredensial JSON Anda
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./crendential/mineral-math-408204-b85e1d993f45.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "physedu.json"
 
 # Path ke file JSON di Google Cloud Storage
 bucket_name = "physude-apps"
@@ -21,9 +22,7 @@ storage_client = storage.Client()
 bucket = storage_client.get_bucket(bucket_name)
 ner = None
 result = None
-        
 
-# Fungsi untuk download ke GCS
 # Fungsi untuk download ke GCS
 def download_to_gcs(bucket_name, source_blob_name, destination_file_path, keyfile_path):
 
@@ -36,40 +35,6 @@ def download_to_gcs(bucket_name, source_blob_name, destination_file_path, keyfil
 
     # Download the file from the bucket to the local file
     blob.download_to_filename(destination_file_path)
-
-
-
-# Pre-processing gambar sebelum diload ke model
-def resize_image(input_path, output_path, target_size):
-    try:
-        image = cv2.imread(input_path)
-
-        if image is None:
-            raise FileNotFoundError(f"file failed to upload, Make sure you upload a .PNG .JPG .JPEG file")
-
-        scale_percent = target_size / max(image.shape[0], image.shape[1])
-        width = int(image.shape[1] * scale_percent)
-        height = int(image.shape[0] * scale_percent)
-        dim = (width, height)
-
-        resized_image = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
-
-        border_x = (target_size - resized_image.shape[1]) // 2
-        border_y = (target_size - resized_image.shape[0]) // 2
-        resized_image = cv2.copyMakeBorder(resized_image, border_y, border_y, border_x, border_x, cv2.BORDER_CONSTANT)
-
-        # Save gambar yang sudah diresized
-        cv2.imwrite(output_path, resized_image)
-        respond = jsonify("Image successfully resized and saved")
-        respond.status_code = 200
-        return respond
-
-    except Exception as e:
-        respond = jsonify({'message': {e}})
-        respond.status_code = 400
-        return respond
-
-
 
 
 # Perhitungan fisika dari rumus
@@ -109,6 +74,35 @@ def calculate_result(entities_list, numbers_list):
     else:
         return print('Tidak ada aturan yang cocok untuk entities_list yang diberikan.')
 
+# Pre-processing gambar sebelum diload ke model
+def resize_image(input_path, output_path, target_size):
+    try:
+        image = cv2.imread(input_path)
+
+        if image is None:
+            raise FileNotFoundError(f"file failed to upload, Make sure you upload a .PNG .JPG .JPEG file")
+
+        scale_percent = target_size / max(image.shape[0], image.shape[1])
+        width = int(image.shape[1] * scale_percent)
+        height = int(image.shape[0] * scale_percent)
+        dim = (width, height)
+
+        resized_image = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
+
+        border_x = (target_size - resized_image.shape[1]) // 2
+        border_y = (target_size - resized_image.shape[0]) // 2
+        resized_image = cv2.copyMakeBorder(resized_image, border_y, border_y, border_x, border_x, cv2.BORDER_CONSTANT)
+
+        # Save gambar yang sudah diresized
+        cv2.imwrite(output_path, resized_image)
+        respond = jsonify({'message': "Image successfully resized and saved"})
+        respond.status_code = 200
+        return respond
+
+    except Exception as e:
+        respond = jsonify({'message': str(e)})
+        respond.status_code = 400
+        return respond
 
 def image_to_model(output_path):
     try:
@@ -121,7 +115,7 @@ def image_to_model(output_path):
         return img_model
 
     except FileNotFoundError as e:
-        respond = jsonify({'message': {e}})
+        respond = jsonify({'message': str(e)})
         respond.status_code = 400
         return respond
 
@@ -132,17 +126,17 @@ def predict() :
 
         filename = request.json['filename']
 
-        download_to_gcs('physude-apps', 'Image-questions/'+filename, './OCR/bucket-images/test.png', './credential/mineral-math-408204-b85e1d993f45.json')
+        download_to_gcs('physude-apps', 'Image-questions/'+filename, './OCR/bucket-images/'+filename, 'physedu.json')
         
         # Proses model OCR
         ocr_path = './OCR/model/model_COR.pkl'
         nlp_path = './NLP/model-best'
-        input_path = './OCR/bucket-images/test.png'
+        input_path = './OCR/bucket-images/'+filename
         output_path = './OCR/output-images/resized_image.jpg'
         target_size = 1200
 
         resize_image(input_path, output_path, target_size)
-            
+        
         image_to_model(output_path)
 
         with open(ocr_path, 'rb') as model_file:
@@ -179,18 +173,19 @@ def predict() :
         result_calculate = calculate_result(variabel_list, numbers_list)
 
         # data convert ke JSON
+        # Periksa apakah array_string dan result_calculate tidak kosong
         if array_string and result_calculate:
             # Jika keduanya tidak kosong, buat data_to_save dengan nilai yang sesuai
             data_to_save = {'Soal': array_string, 'Hasil_Perhitungan': result_calculate}
         else:
             # Jika salah satu atau keduanya kosong, buat data_to_save tanpa NULL
-            data_to_save = {'Soal': array_string or "Data Kosong", 'Hasil_Perhitungan': result_calculate or "Hasil tidak diketahui"}
+            data_to_save = {'Soal': array_string or "Data Kosong", 'Hasil_Perhitungan': result_calculate or "Data Kosong"}
 
         respond = jsonify(data_to_save)
         respond.status_code = 200
         return respond
-        
+
     return "OK"
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=8000)

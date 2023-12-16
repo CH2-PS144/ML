@@ -1,8 +1,8 @@
-# Ignore credential key
-/credential/mineral-math-408204-b85e1d993f45.json
-
 # Ignore NLP folder
-/NLP/model-best
+/NLP
 
 # Ignore model folder
-/OCR/model
+/OCR
+
+# Ignore credential key
+physedu.json

@@ -179,7 +179,7 @@ def predict() :
             data_to_save = {'Soal': array_string, 'Hasil_Perhitungan': result_calculate}
         else:
             # Jika salah satu atau keduanya kosong, buat data_to_save tanpa NULL
-            data_to_save = {'Soal': array_string or "Data Kosong", 'Hasil_Perhitungan': result_calculate or "Data Kosong"}
+            data_to_save = {'Soal': array_string or "Data Kosong", 'Hasil_Perhitungan': result_calculate or "Tidak ada perhitungan"}
 
         respond = jsonify(data_to_save)
         respond.status_code = 200

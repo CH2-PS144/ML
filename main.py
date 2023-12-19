@@ -7,6 +7,7 @@ import cv2
 import spacy
 import re
 import os
+import asyncio
 
 app = Flask(__name__)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "physedu.json"
@@ -81,18 +82,54 @@ def resize_image(input_path, output_path, target_size):
     height = int(image.shape[0] * scale_percent)
     dim = (width, height)
     resized_image = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
-    border_x = (target_size - resized_image.shape[1]) // 2
-    border_y = (target_size - resized_image.shape[0]) // 2
-    resized_image = cv2.copyMakeBorder(resized_image, border_y, border_y, border_x, border_x, cv2.BORDER_CONSTANT)
     return cv2.imwrite(output_path, resized_image)
 
 # Load model OCR & Delete resized_image
 def load_model_OCR(ocr_path, image_model, output_path):
     with open(ocr_path, 'rb') as model_file:
         loaded_reader = pickle.load(model_file)
-    result = loaded_reader.readtext(image_model, detail=0)
+    result = loaded_reader.readtext(image_model, detail=0, batch_size=100)
     os.remove(output_path)
     return result
+
+# Asynchronous processing
+async def process_image_async(image_path, ocr_path, nlp_path, target_size, output_path, input_path, filename):
+    await asyncio.to_thread(resize_image, image_path, output_path, target_size)
+
+    image_model = cv2.imread(output_path)
+
+    result = await asyncio.to_thread(load_model_OCR, ocr_path, image_model, output_path)
+
+    ner = spacy.load(nlp_path)
+    array_string = ' '.join(map(str, result))
+    questions = ner(array_string)
+
+    variabel_list = []
+    numbers_list = []
+
+    pattern = re.compile(r'\b(\d+)\s*(?=[a-zA-Z])|\b(\d+)\s*$')
+
+    for ent in questions.ents:
+        variabel_list.append((ent.text))
+        variabel_list = variabel_list
+
+    numbers_list = [match.group(1) or match.group(2) for match in pattern.finditer(array_string)]
+
+    if len(variabel_list) > 2:
+        variabel_list.pop(2)
+
+    numbers_list = [int(x) for x in numbers_list]
+
+    result_calculate = calculate_result(variabel_list, numbers_list)
+
+    if array_string and result_calculate:
+        data_to_save = {'question': array_string, 'result': result_calculate}
+    else:
+        data_to_save = {'question': array_string or "your data is not question type", 'result': result_calculate or "no calculation"}
+
+    upload_from_gcs(bucket_name, input_path, 'Image-questions/' + filename)
+
+    return data_to_save
 
 
 
@@ -102,7 +139,7 @@ def predict() :
         reqImage = request.files['image']
         ocr_path = app.config['OCR_PATH']
         nlp_path = app.config['NLP_PATH']
-        target_size = 1200
+        target_size = 450
 
         if reqImage and allowed_file(reqImage.filename):
 
@@ -113,41 +150,9 @@ def predict() :
             
             resize_image(input_path, output_path, target_size)
 
-            image_model = cv2.imread(output_path)
+            async_result = asyncio.run(process_image_async(input_path, ocr_path, nlp_path, target_size, output_path, input_path, filename))
 
-            result = load_model_OCR(ocr_path, image_model, output_path)
-
-            ner = spacy.load(nlp_path)
-
-            array_string = ' '.join(map(str, result))
-            questions = ner(array_string)
-
-            variabel_list = []
-            numbers_list = []
-
-            pattern = re.compile(r'\b(\d+)\s*(?=[a-zA-Z])|\b(\d+)\s*$')
-
-            for ent in questions.ents:
-                variabel_list.append((ent.text))
-                variabel_list = variabel_list
-
-            numbers_list = [match.group(1) or match.group(2) for match in pattern.finditer(array_string)]
-
-            if len(variabel_list) > 2:
-                variabel_list.pop(2)
-            
-            numbers_list = [int(x) for x in numbers_list]
-
-            result_calculate = calculate_result(variabel_list, numbers_list)
-
-            if array_string and result_calculate:
-                data_to_save = {'Soal': array_string, 'Hasil_Perhitungan': result_calculate}
-            else:
-                data_to_save = {'Soal': array_string or "Empty Data", 'Hasil_Perhitungan': result_calculate or "No calculation"}
-
-            upload_from_gcs(bucket_name, input_path, 'Image-questions/'+filename)
-
-            respond = jsonify(data_to_save)
+            respond = jsonify(async_result)
             respond.status_code = 200
             return respond
         else :

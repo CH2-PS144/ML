@@ -133,7 +133,7 @@ async def process_image_async(image_path, ocr_path, nlp_path, target_size, outpu
 
 
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/predict', methods=['GET','POST'])
 def predict() :
     if request.method == 'POST' :
         reqImage = request.files['image']

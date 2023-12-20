@@ -14,4 +14,4 @@
 9. Run the app using the command: `python main.py`.
 10. By default, the server will run on the localhost with the port 8000, open [http://localhost:8000](http://localhost:8000) to view it in your browser.
 11. If it shows 'OK' then you have successfully run the predict api.
-12. The next step is to configure the backend service, you can find it in the [backend](/) repository.
+12. The next step is to configure the backend service, you can find it in the [backend](https://github.com/CH2-PS144/Backend) repository.

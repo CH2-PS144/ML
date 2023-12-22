@@ -66,7 +66,6 @@ def calculate_result(entities_list, numbers_list):
         ('arus listrik', 'resistor'): lambda: f'Besar tegangan: {numbers_list[0] * numbers_list[1]}',
         ('tegangan', 'resistor'): lambda: f'Besar arus listrik: {numbers_list[0] / numbers_list[1]}',
         ('tegangan', 'arus listrik'): lambda: f'Besar resistansi/hambatan: {numbers_list[0] / numbers_list[1]}',
-        # ... tambahkan kasus lain sesuai kebutuhan
     }
     key = tuple(entities_list)
     if key in switch_dict:

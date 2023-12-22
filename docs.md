@@ -1,7 +1,7 @@
 # Machine Learning API Documentation
 
 ## Post a successfully run API
-Endpoint : POST http://34.87.40.161:8000/predict
+Endpoint : POST http://34.87.40.161/predict
 Response Body Success :
 ```json
 {
@@ -11,7 +11,7 @@ Response Body Success :
 ```
 
 ## Post not a picture (.png, .jpeg, .jpg)
-Endpoint : POST http://34.87.40.161:8000/predict
+Endpoint : POST http://34.87.40.161/predict
 Response Body Error :
 ```json
   {
@@ -23,7 +23,7 @@ Response Body Error :
 ```
 
 ## Post but not question type
-Endpoint : POST http://34.87.40.161:8000/predict
+Endpoint : POST http://34.87.40.161/predict
 Response Body Error :
 ```json
   {
